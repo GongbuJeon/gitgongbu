@@ -1,169 +1,67 @@
-/* eslint-disable */
+// App.js
+
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { useEffect, useState } from 'react';
-import { useRef } from 'react';
+import SubjectForm from './SubjectForm';
+import SubjectList from './SubjectList';
 
 function App() {
-  let [mode, setMode] = useState('plan');
-  let [temptitle, setTemptitle] = useState('');
-  let [tempmemo, setTempmemo] = useState('');
-  let [tempstarttime, setTempstarttime] = useState('');
-  let [tempendtime, setTempendtime] = useState('');
-  let date = new Date();
-  // 오늘 날짜 가져오는 방식
-  // let [year, month, day] = [date.getFullYear(), date.getMonth()+1, date.getDate()]
-  // let userdate = 2023-04-27
-  var starttimehour = parseInt(tempstarttime.split(":")[0], 10);
-  var starttimeminute = parseInt(tempstarttime.split(":")[1], 10);
-  var endtimehour = parseInt(tempendtime.split(":")[0], 10);
-  var endtimeminute = parseInt(tempendtime.split(":")[1], 10);
-  let boxheight = ((endtimehour - starttimehour) * 60 + (endtimeminute - starttimeminute)) * 0.4166
-  let boxmargin = (starttimehour * 60 + starttimeminute) * 0.41666
-  let [today, setToday] = useState('')
-  let [dayTaskPlan, setdayTaskPlan] = useState([])
-  let dayObjectPlan = {}
-  let [dayTaskDo, setdayTaskDo] = useState([])
-  let dayObjectDo = {}
-
-  let local = useRef([])
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    console.log(mode);
-  }, [mode]);
+    const storedItems = JSON.parse(localStorage.getItem('items')) || [];
+    setItems(storedItems);
+  }, []);
 
-  function add(a, key, value) {
-    a[key] = value;
-    return a
-  }
+  const handleSave = (newItem) => {
+    const existingItem = items.find((item) => item.subject === newItem.subject);
+
+    if (existingItem) {
+      const updatedItems = items.map((item) =>
+        item.subject === newItem.subject
+          ? { ...item, qaPairs: [...item.qaPairs, newItem.qaPair] }
+          : item
+      );
+      setItems(updatedItems);
+      localStorage.setItem('items', JSON.stringify(updatedItems));
+    } else {
+      const updatedItems = [...items, { subject: newItem.subject, qaPairs: [newItem.qaPair] }];
+      setItems(updatedItems);
+      localStorage.setItem('items', JSON.stringify(updatedItems));
+    }
+  };
 
   return (
-    <div className="container">
-
-      <input type='date' onChange={(e) => { 
-        setToday(e.target.value), setdayTaskPlan([])
-    }
-      }></input>
-      {/* <div>{year}년 {month}월 {day}일</div> */}
-      <div className='modal-text'>
-        <div><button style={{ float: 'right' }} onClick={() => {
-          document.querySelector('.modal-text').classList.toggle
-            ('show-modal')
-        }}>x</button></div>
-        <input style={{ margin: '20px' }} type='text' placeholder='Plan'
-          value={temptitle} onChange={(e) => {
-            setTemptitle(e.target.value)
-          }}></input>
-        <div>
-          <div style={{ margin: '10px' }}>시작시간 : <input type='time' value={tempstarttime} onChange={(e) => { setTempstarttime(e.target.value) }}></input></div>
-          <div style={{ margin: '10px' }}>종료시간 : <input type='time' value={tempendtime} onChange={(e) => { setTempendtime(e.target.value) }}></input></div>
-        </div>
-        <input type='text' placeholder='상세메모' value={tempmemo}
-          onChange={(e) => { setTempmemo(e.target.value) }}></input>
-        <input style={{ margin: '20px' }} type='text' placeholder='해쉬태그'></input>
-        <div style={{ margin: '20px' }}>
-          <button onClick={() => {
-            const task = {
-              title: temptitle,
-              memo: tempmemo,
-              starttime: tempstarttime,
-              endtime: tempendtime,
-              boxheight: boxheight,
-              boxmargin: boxmargin
-            }
-            if (mode == 'plan') {
-              dayTaskPlan.push(task);
-              add(dayObjectPlan, 'id', today);
-              add(dayObjectPlan, 'task', dayTaskPlan);
-              // localStorage.setItem('plan', JSON.stringify(dayObjectPlan));
-            }
-            else {
-              dayTaskDo.push(task);
-              add(dayObjectDo, 'id', today);
-              add(dayObjectDo, 'task', dayTaskDo);
-              // localStorage.setItem('do', JSON.stringify(dayObjectDo));
-            }
-
-            add(local, 'plan', dayObjectPlan)
-            add(local, 'do', dayObjectDo)
-
-            if (localStorage.length == 0)
-            {localStorage.setItem('do', JSON.stringify(local));}
-
-            else 
-            {const getData = JSON.parse(localStorage.getItem('do'));
-            console.log(getData)
-            getData.today = dayTaskPlan;
-            localStorage.setItem('do', JSON.stringify(getData));
-            }
-
-            document.querySelector('.modal-text').classList.toggle('show-modal')
-
-            // reset
-            setTemptitle('')
-            setTempmemo('')
-            setTempstarttime('')
-            setTempendtime('')
-
-
-          }}>입력</button></div>
-      </div>
-
-      <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-        <div className='time'>시간</div>
-        <div className="container1">
-          <div style={{ width: '50%', height: '100%', position: 'relative' }}>
-            {
-              dayTaskPlan.map((a, i) => {
-                return (
-                  <div style={{
-                    marginTop: dayTaskPlan[i].boxmargin, width: '100%', maxWidth: '350px',
-                    height: dayTaskPlan[i].boxheight, backgroundColor: 'yellow', textAlign: 'center'
-                    , position: 'absolute'
-                  }}></div>
-                )
-              })
-            }
-          </div>
-
-          <div style={{ width: '50%', height: '100%', position: 'relative' }}>
-            {
-              dayTaskDo.map((a, i) => {
-                return (
-                  <div style={{
-                    marginTop: dayTaskDo[i].boxmargin, width: '100%', maxWidth: '350px',
-                    height: dayTaskDo[i].boxheight, backgroundColor: 'orange', textAlign: 'center'
-                    , position: 'absolute'
-                  }}></div>
-                )
-              })
-            }
-          </div>
-        </div>
-      </div>
-
-      <button onClick={() => {
-        setMode('plan');
-        document.querySelector('.modal-text').classList.toggle
-          ('show-modal')
-      }}>plan</button>
-
-      <button onClick={() => {
-        setMode('do');
-        document.querySelector('.modal-text').classList.toggle
-          ('show-modal')
-      }}>do</button>
-
-      <button onClick={() => {
-        console.log(localStorage)
-      }}>확인</button>
-
-
+    <div className="App">
+      <h1>TTS</h1>
+      <SubjectForm onSave={handleSave} />
+      <SubjectList items={items} />
     </div>
   );
 }
 
-// localStorage.setItem('데이터이름', JSON.stringify({name:'kim'}) );
-// array나 object localstorage에 집어 넣기
-// Json.parse(localStorage.getItem('데이터이름'))
-
 export default App;
+
+
+
+
+// [  { name1 : [{question : a, answer : b}, {question : c, answer : d}] }, { name2 : [{question : a, answer : b}, {question : c, answer : d}] } ]
+// 전체이름 data : [] (dataArr)
+
+// 음성 문제 
+// 문답끼리의 간격 설정은 따로 해줘야함.
+
+// 사용자 지정 시간 설정
+// setTimeout을 썼는데 얘가 비동기 문제가 있어서 question을 다 읽고 answer를 읽음.
+
+// 실시간으로 멈추는게 안됨 (chatgpt 코드 써도)
+
+
+// 랜덤재생 확인하기
+// dataArr의 형식이 바뀌면서 다시 수정해야함
+
+
+// 편집
+// 모달창을 띄우고 값을 받는 것까지는 구현
+// 값을 고치고 수정하기 버튼을 누르면 c와 d state의 내용을 위의 3개의 map안의 qna.question, qna.answer에 넣어야함
+// 그런데 모달창에서는 다른 div에 있는 안의 변수에 접근이 불가능 

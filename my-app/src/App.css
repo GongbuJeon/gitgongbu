@@ -1,68 +1,45 @@
-.App {
-  text-align: center;
+.off {
+  color: black;
 }
 
-.container {
-  width: 100%;
-  height: 100%;
-  position: relative;
+.off2 {
+  color: black;
 }
 
-.modal-text {
-  position: absolute;
+.off3 {
+  color: black;
+}
+
+.on-off {
+  background-color: black;
+  color: aquamarine;
+}
+
+.modal {
+  width: 70%;
+  height: 20%;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  padding: 20px;
-  border: 3px solid black;
-  border-radius: 5px;
-  width: 50%;
-  display: none;
-  flex-direction: column;
   background-color: white;
-  z-index: 2;
-}
-
-.modal-calander {
-  position: absolute;
-  /* margin-top: 25%; */
-  left: 25%;
-  text-align: center;
-  padding: 20px;
-  border: 3px solid black;
-  border-radius: 5px;
-  width: 50%;
-  height: 70%;
-  display: block;
-}
-
-.modal-text > input {
-  margin: 10px;
-}
-
-.container1 {
-  left: 25%;
-  width: 50%;
-  height: 600px;
-  background-color: green;
   border: 1px solid black;
   display: flex;
-  z-index: 1;
+  visibility: hidden;
+  flex-direction: column;
+  align-items: center;
 }
 
-.time {
-  width: 5%;
-  left : 25%;
-  height: 600px;
-  background-color: aquamarine;
-  border: 1px solid black;
-  z-index: 1;
-  text-align: center;
+.modal-on-off {
+  visibility: visible;
 }
 
-.show-modal {
+.modal-xbutton {
   display: flex;
 }
 
-/* style = {{zIndex : '1', position : 'relative'}} */
+.modal-input {
+  display: flex;
+  flex-direction: column;
+}
