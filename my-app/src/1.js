@@ -1,8 +1,8 @@
 /* eslint-disable */
 import './App.css';
 import { React, useState, useEffect } from 'react';
-import Sampl1 from './sampl1';
-import Sampl2 from './sampl2';
+import Main from './main';
+import Group from './Group';
 let dataArr = [];
 let temp = '';
 let isPause = false;
@@ -14,6 +14,8 @@ function App() {
 
   const [dataArrState, setDataArrState] = useState([]);
   const [control, setControl] = useState();
+  const [current, setCurrent] = useState(null);
+  const [current2, setCurrent2] = useState('');
 
   useEffect(() => {
 
@@ -34,19 +36,38 @@ function App() {
     }
   }, [])
 
-  const handleChild = (childData) => {
-    console.log(childData);
-  }
+
+
+    const handleChildClick = (datafromchild) => {
+        setDataArrState(datafromchild)
+    }
+
+    const sendSampl2 = (data) => {
+      setCurrent(data)
+      // data
+      console.log('작동')
+      console.log(current)
+    }
+
+    const sendSampl22 = (data) => {
+      setCurrent2(data)
+      console.log(current2)
+    }
+
+    console.log(current)
 
   return (
     <div className='MyContainer'>
-    <Sampl1 dataArr={dataArr}
+    <Main dataArr={dataArr}
     dataArrState = {dataArrState}
-    abc = {handleChild()}
-    ></Sampl1>
-    <Sampl2 dataArr={dataArr}
+    onChildClick = {handleChildClick}
+    s1={sendSampl2}
+    s2={sendSampl22}
+    ></Main>
+    <Group dataArr = {dataArr}
     dataArrState = {dataArrState}
-    ></Sampl2>
+    data = {current}
+    ></Group>
     </div>
   )
 }
