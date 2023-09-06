@@ -5,8 +5,7 @@ let newarray = [];
 let temp = '';
 
 
-const Sampl2 = ({ dataArr, dataArrState }) => {
-
+const Group = ({ dataArr, dataArrState, data, s2 }) => {
 
     let [a, setA] = useState('');
     let [b, setB] = useState('');
@@ -19,6 +18,7 @@ const Sampl2 = ({ dataArr, dataArrState }) => {
     const [random, setRandom] = useState('랜덤');
     const [qnatimeA, setQnatimeA] = useState(2);
     const [highlighted, setHighlighted] = useState(false);
+    const [expandedSubject, setExpandedSubject] = useState(data);
     const [button, setButton] = useState('입력하기');
 
 
@@ -117,18 +117,25 @@ const Sampl2 = ({ dataArr, dataArrState }) => {
         return array
     }
 
+    const toSampl22 = (parameter) => {
+        s2(parameter)
+    }
+
+
     useEffect(() => {
         // setDataArrState(dataArr);
     }, [])
 
-    console.log(dataArrState)
-
+    console.log(expandedSubject)
+    console.log(data)
+    // expandedSubject === subject.name
 
     return (
+        <> 
         <div className='c'>
             {dataArrState.map((subject, index) => (
                 <div key={subject.name} id={index}>
-                    {expandedSubject === subject.name && (
+                    {data === subject.name && (
                         <div>
                             <div>
                                 <h1 className='main'>{subject.name}</h1>
@@ -139,7 +146,9 @@ const Sampl2 = ({ dataArr, dataArrState }) => {
                                         // 뒤로 가기 버튼을 누르면 기존의 그룹 화면을 보여주고 나머지를 숨깁니다.
                                         document.querySelector('.MyModal').classList.remove('on-off');
                                         handleHighlightToggle()
-                                        handleSubjectClick()
+                                        // handleSubjectClick()
+                                        data = null;
+                                        console.log(data)
                                         isPause = true;
                                         speechSynthesis.resume()
                                         speechSynthesis.cancel()
@@ -337,7 +346,32 @@ const Sampl2 = ({ dataArr, dataArrState }) => {
                 </div>
             ))}
         </div>
+        <div className='MyModal'>
+
+                <div className='xbutton'>
+                    <button
+                        onClick={() => { document.querySelector('.MyModal').classList.toggle('on-off') }}>x</button>
+                </div>
+
+                <div>
+                    <input
+                        placeholder='질문'
+                        value={a}
+                        onChange={(e) => { setA(e.target.value) }}
+                    ></input>
+                </div>
+
+                <div>
+                    <input placeholder='답'
+                        value={b}
+                        onChange={(e) => { setB(e.target.value) }}
+                        style={{ height: '100px' }}
+                    ></input>
+                </div>
+
+        </div>
+        </>
     );
 }
 
-export default Sampl2;
+export default Group;
