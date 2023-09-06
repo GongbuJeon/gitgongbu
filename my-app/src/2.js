@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 let newarray = [];
 
-const Sampl1 = ({ dataArr, dataArrState }) => {
+const Main = ({ dataArr, dataArrState, onChildClick, s1 }) => {
+
 
     let isPause = false;
     let [a, setA] = useState('');
@@ -14,6 +15,7 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
     let [group, setGroup] = useState('');
     const [qnatimeA, setQnatimeA] = useState(2);
     const [qnatimeB, setQnatimeB] = useState(2);
+    let send = ''
     
 
     const handleSubjectClick = (subjectName) => {
@@ -38,9 +40,8 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
         else {
             dataArr.push({ name: group, QnA: [] })
             setGroup('')
-            // setDataArrState(dataArr);
+            handleClick(dataArr)
             localStorage.setItem('data', JSON.stringify(dataArr));
-            console.log(dataArrState)
         }
     }
 
@@ -50,14 +51,27 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
         console.log(dataArrState)
     }, [])
 
+    useEffect(() => {
+      setHighlighted(!highlighted);
+    }, '~~~가 바뀌면')
+
     function createNewArrayWithIndices(array) {
         return array.map((_, index) => index);
       }
 
-      console.log(dataArr)
-      console.log(dataArrState)
+    const handleClick = (parameter) => {
+        onChildClick(parameter)
+    }
+
+    const toSampl2 = (parameter) => {
+        s1(parameter)
+    }
+
+
+
 
     return (
+
         <div>
             {/* 그룹인풋 */}
             <div className={`group ${highlighted ? 'highlighted' : ''}`}>
@@ -86,6 +100,11 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
                     onClick={() => { document.querySelector(`.modalSetting`).classList.toggle('on-off') }}>설정
                 </button>
 
+                {/* <button
+                    onClick={handleClick}
+                >    
+                </button> */}
+
             </div>
 
             {/* 제목 */}
@@ -99,8 +118,9 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
 
                 onClick={() => {
                   document.querySelector('.modalSetting').classList.remove('on-off')
-                  handleSubjectClick(subject.name)
-                  handleHighlightToggle()
+                  handleSubjectClick(subject.name);
+                  toSampl2(subject.name)
+                  handleHighlightToggle();
                   isPause = true;
                   if (pause == '재개') {
                     setPause('일시정지')
@@ -121,6 +141,7 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
                   if (result) {
                     dataArr.splice(index, index + 1);
                     let rrrrr = [...dataArr];
+                    handleClick(rrrrr)
                     setGroup('')
                     localStorage.setItem('data', JSON.stringify(dataArr));
                   }
@@ -188,4 +209,4 @@ const Sampl1 = ({ dataArr, dataArrState }) => {
         </div>
     );
 }
-export default Sampl1;
+export default Main;
